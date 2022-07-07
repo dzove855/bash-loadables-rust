@@ -7,5 +7,8 @@ toto3='{"testing": "hehe", "blob": "triiiiiiiii", "tik": {"muu": "haa", "tut": {
 
 json -e
 
-json -v exported -d toto3
+echo "$toto3"
+
+json -v exported -d toto3 -D .
 declare -p exported
+echo ${exported[tik.muu]}

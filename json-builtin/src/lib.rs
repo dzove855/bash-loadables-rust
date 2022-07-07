@@ -2,7 +2,7 @@
 
 use bash_builtins::variables::{self};
 use bash_builtins::{builtin_metadata, Args, Builtin, BuiltinOptions, Result};
-use serde_json::{Value, Map};
+use serde_json::{Value};
 use std::io::{self, BufWriter, Write};
 
 builtin_metadata!(
@@ -15,6 +15,8 @@ builtin_metadata!(
         Options:
           -e\tEncode.
           -d\tDecode.
+          -v\tVariable to assign (Default: JSON)
+          -D\tDelimeter (Default: :)
     ",
 );
 
@@ -28,6 +30,9 @@ enum Opt {
 
     #[opt = 'v']
     Var(String),
+
+    #[opt = 'D']
+    Delimeter(String),
 }
 
 #[derive(Default)]
@@ -37,6 +42,7 @@ impl Builtin for Json {
     fn call(&mut self, args: &mut Args) -> Result<()> {
         // No options: print the current value and increment it.
         let mut var = "JSON".to_string();
+        let mut delimeter = ":".to_string();
         let mut to_decode = None;
         let mut action = "";
         let stdout_handle = io::stdout();
@@ -56,6 +62,9 @@ impl Builtin for Json {
                 Opt::Encode => {
                     writeln!(&mut output, "Encode not implemented yet!")?;
                 }
+                Opt::Delimeter(v) => {
+                    delimeter = v;
+                }
             }
         }
 
@@ -63,7 +72,7 @@ impl Builtin for Json {
             "decode" => {
                 if let Some(value) = to_decode.as_ref().and_then(|v| v.to_str().ok()) {
                     let json: Value = serde_json::from_str(value).unwrap();
-                    parse_json(&json, "", &var)?;   
+                    parse_json(&json, "", &var, &delimeter)?;   
                 }
             }
             _ => {}
@@ -74,8 +83,7 @@ impl Builtin for Json {
     }
 }
 
-fn parse_json(json: &Value, tl: &str, var: &str) -> Result<()>{
-    let delimeter = ":";
+fn parse_json(json: &Value, tl: &str, var: &str, delimeter: &str) -> Result<()>{
     'jloop: for (k, t) in json.as_object().unwrap() {
         match t.as_str() {
             Some(value) => {    
@@ -85,9 +93,9 @@ fn parse_json(json: &Value, tl: &str, var: &str) -> Result<()>{
             None => {}
         };
         if tl.is_empty() {
-            parse_json(&json[k], format!("{}{}", k, delimeter).as_str(), &var)?;
+            parse_json(&json[k], format!("{}{}", k, delimeter).as_str(), &var, delimeter)?;
         } else {
-            parse_json(&json[k], format!("{}{}{}", tl, k, delimeter).as_str(), &var)?;
+            parse_json(&json[k], format!("{}{}{}", tl, k, delimeter).as_str(), &var, delimeter)?;
         }
     }
 
