@@ -20,6 +20,9 @@ enable -f target/debug/libjson_builtin.so json
 test='{"testing": "hehe", "blob": "triiiiiiiii", "tik": {"muu": "haa", "tut": {"blea": "nek"}}, "mip": "fi", "nik": {"blik": "nek", "lorem": "ipsum", "candy": "handy"}, "michael": "jordan"}'
 
 json -v exported -d test -D .
+
+#Output of exported
+declare -A exported=([nik.candy]="handy" [tik.muu]="haa" [nik.blik]="nek" [blob]="triiiiiiiii" [michael]="jordan" [mip]="fi" [nik.lorem]="ipsum" [testing]="hehe" [tik.tut.blea]="nek" )
 ```
 Help Example:
 ```
