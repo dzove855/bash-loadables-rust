@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -vx
 #declare -A miii
 enable -f target/debug/libjson_builtin.so json
 
