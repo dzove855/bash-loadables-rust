@@ -11,4 +11,3 @@ echo "$toto3"
 
 json -v exported -d toto3 -D .
 declare -p exported
-echo ${exported[tik.muu]}
