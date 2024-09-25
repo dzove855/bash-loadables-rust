@@ -1,7 +1,7 @@
 # Bash loadables builtins in rust
 
 Json Encode/Decode -> bash-json-plugin
-
+Expr -> arithmethic expression 
 
 NOTE: It's all still experimental to learn Rust
 
@@ -31,4 +31,22 @@ Help Example:
       -d        Decode.
       -v        Variable to assign (Default: JSON)
       -D        Delimeter (Default: :)
+```
+
+## Expr
+compile:
+```
+cd expr; cargo build
+```
+Move the target file where ever you want and then just enable it inside your script:
+```
+enable -f target/debug/libexpr_builtin.so expr
+
+expr -v result "2/3"
+echo $result
+```
+Help Example:
+```
+    Options:
+      -v        Variable to assign (Default: RESULT)
 ```
